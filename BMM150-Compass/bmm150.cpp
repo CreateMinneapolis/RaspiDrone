@@ -29,6 +29,8 @@ int main() {
     int retval;
     unsigned char outbuf[3];
     unsigned char inbuf[7];
+
+    // BMM150 uses the same default I2C address
     unsigned char slave_addr = 0x10;
 
     struct i2c_msg msgs[2];

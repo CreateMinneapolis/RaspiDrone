@@ -27,27 +27,29 @@ int main() {
     }
     
     int retval;
-    unsigned char outbuf[3];
-    unsigned char inbuf[7];
+    unsigned char outbuf[1];
+    unsigned char inbuf[8];
 
-    // BMM150 uses the same default I2C address
+    // BMM150 uses the same default I2C address (if not working, try 0x13)
     unsigned char slave_addr = 0x10;
 
     struct i2c_msg msgs[2];
     struct i2c_rdwr_ioctl_data msgset[1];
 
-    outbuf[0] = 1;
-    outbuf[1] = 2;
-    outbuf[2] = 7;
+    //MIGHT NEED TO CHANGE
+    outbuf[0] = 0x42;
+    /*outbuf[1] = 2;
+    outbuf[2] = 7; */
 
     msgs[0].addr = slave_addr;
     msgs[0].flags = 0;
-    msgs[0].len = 3;
+    //send 1 byte
+    msgs[0].len = 1;
     msgs[0].buf = outbuf;
     
     msgs[1].addr = slave_addr;
-    msgs[1].flags = I2C_M_RD;
-    msgs[1].len = 7;
+    msgs[1].flags = I2C_M_RD; // || add maybe I2C_STOP...;
+    msgs[1].len = 8;
     msgs[1].buf = inbuf;
 
     msgset[0].msgs = msgs;

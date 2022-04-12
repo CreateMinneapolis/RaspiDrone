@@ -10,12 +10,17 @@ int8_t BMM150::initialize(void) {
     Wire.begin();
 
     /* Power up the sensor from suspend to sleep mode */
+    //#define BMM150_SLEEP_MODE		0x03
     set_op_mode(BMM150_SLEEP_MODE);
+    //#define BMM150_START_UP_TIME		(3)
     delay(BMM150_START_UP_TIME);
 
     /* Check chip ID */
+    //#define BMM150_CHIP_ID_ADDR		    0x40
     uint8_t id = i2c_read(BMM150_CHIP_ID_ADDR);
+    //#define BMM150_CHIP_ID              0x32
     if (id != BMM150_CHIP_ID) {
+        //#define BMM150_E_ID_NOT_CONFORM		    (-1)
         return BMM150_E_ID_NOT_CONFORM;
     }
 
@@ -30,6 +35,7 @@ int8_t BMM150::initialize(void) {
     set_presetmode(BMM150_PRESETMODE_LOWPOWER);
     // set_presetmode(BMM150_HIGHACCURACY_REPZ);
 
+    //#define BMM150_OK	(0)
     return BMM150_OK;
 }
 
@@ -405,8 +411,11 @@ void BMM150::read_trim_registers() {
     uint16_t temp_msb = 0;
 
     /* Trim register value is read */
+    //#define BMM150_DIG_X1               UINT8_C(0x5D)
     i2c_read(BMM150_DIG_X1, trim_x1y1, 2);
+    //#define BMM150_DIG_Z4_LSB           UINT8_C(0x62)
     i2c_read(BMM150_DIG_Z4_LSB, trim_xyz_data, 4);
+    //#define BMM150_DIG_Z2_LSB           UINT8_C(0x68)
     i2c_read(BMM150_DIG_Z2_LSB, trim_xy1xy2, 10);
     /*  Trim data which is read is updated
         in the device structure */
@@ -431,9 +440,20 @@ void BMM150::read_trim_registers() {
 
 void BMM150::write_op_mode(uint8_t op_mode) {
     uint8_t reg_data = 0;
+    //#define BMM150_OP_MODE_ADDR		    0x4C
     reg_data = i2c_read(BMM150_OP_MODE_ADDR);
+    
     /* Set the op_mode value in Opmode bits of 0x4C */
     reg_data = BMM150_SET_BITS(reg_data, BMM150_OP_MODE, op_mode);
+    /**
+     * /**name Macro to SET and GET BITS of a register
+    #define BMM150_SET_BITS(reg_data, bitname, data) \
+        ((reg_data & ~(bitname##_MSK)) | \
+        ((data << bitname##_POS) & bitname##_MSK))
+     * 
+     */
+
+    //#define BMM150_OP_MODE_ADDR		    0x4C
     i2c_write(BMM150_OP_MODE_ADDR, reg_data);
 }
 

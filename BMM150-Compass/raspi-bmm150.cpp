@@ -1,5 +1,7 @@
 // Code from TFMini I2C
 
+//to test for conected I2C devices, run: "sudo i2cdetect -y 1"
+
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>

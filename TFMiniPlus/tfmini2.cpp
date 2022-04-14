@@ -54,8 +54,9 @@ int main() {
 			perror("ioctl(I2C_RDWR) in i2c_write");
 			return -1;
 		}
-		
+		//CREATES 16 BIT NUMBER
 		std::cout << "Dist " << ((inbuf[3] << 8 | inbuf[2])) << std::endl;
+        //DELAY
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	

@@ -7,7 +7,7 @@
 int main() {
 	int file_i2c;
 	int length;
-	unsigned char buffer[60] = {0};
+	unsigned char buffer[60];
 
 	
 	//----- OPEN THE I2C BUS -----
@@ -37,7 +37,12 @@ int main() {
 	}
 	else
 	{
-		printf("Data read: %s\n", buffer);
+        //output is 255 255 255 255 
+        //NEED TO INVESTIGATE (make handshake)
+		printf("Data read: %d\n", (int)buffer[0]);
+        printf("Data read: %d\n", (int)buffer[1]);
+        printf("Data read: %d\n", (int)buffer[2]);
+        printf("Data read: %d\n", (int)buffer[3]);
 	}
 
 	

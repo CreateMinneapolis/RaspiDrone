@@ -53,6 +53,8 @@ int main() {
 		}
 	}
 
+
+
 	/*
 	//----- WRITE BYTES -----
 	buffer[0] = 0x01;
@@ -64,4 +66,45 @@ int main() {
 		printf("Failed to write to the i2c bus.\n");
 	} */
 
+}
+
+void suspend_to_sleep_mode() {
+	set_power_control_bit(BMM150_POWER_CNTRL_ENABLE);
+	//delay 3ms
+	//delay(3);
+}
+
+void set_power_control_bit(__uint8_t pwrcntrl_bit) {
+	__uint8_t reg_data = 0;
+
+	/* Power control register 0x4B is read */
+    //reg_data = i2c_read(BMM150_POWER_CONTROL_ADDR);
+    /* Sets the value of power control bit */
+    //reg_data = BMM150_SET_BITS_POS_0(reg_data, BMM150_PWR_CNTRL, pwrcntrl_bit);
+    //i2c_write(BMM150_POWER_CONTROL_ADDR, reg_data);
+}
+
+void write_op_mode(__uint8_t op_mode) {
+	
+	//uint8_t reg_data = 0;
+    
+	//  #define BMM150_OP_MODE_ADDR		    0x4C
+    //reg_data = i2c_read(BMM150_OP_MODE_ADDR);
+
+    /* Set the op_mode value in Opmode bits of 0x4C */
+    //reg_data = BMM150_SET_BITS(reg_data, BMM150_OP_MODE, op_mode);
+    /**
+	
+	--------
+
+     * /**name Macro to SET and GET BITS of a register
+    #define BMM150_SET_BITS(reg_data, bitname, data) \
+        ((reg_data & ~(bitname##_MSK)) | \
+        ((data << bitname##_POS) & bitname##_MSK))
+     *
+     */
+	----
+
+    //  #define BMM150_OP_MODE_ADDR		    0x4C
+    //i2c_write(BMM150_OP_MODE_ADDR, reg_data);
 }

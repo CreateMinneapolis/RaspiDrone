@@ -3,9 +3,10 @@
 #include <sys/ioctl.h>			//Needed for I2C port
 #include <linux/i2c-dev.h>		//Needed for I2C port
 #include <cstdio>
+#include "raspi-bmm150_defs.h"
 
 int main() {
-	int file_i2c;
+	__uint8_t file_i2c;
 	int length;
 	unsigned char buffer[60];
 
@@ -19,17 +20,25 @@ int main() {
 		return -1;
 	}
 	
-	int addr = 0x13;          //<<<<<The I2C address of the slave (BMM150)
-	if (ioctl(file_i2c, I2C_SLAVE, addr) < 0)
+	//int addr = 0x13;          //<<<<<The I2C address of the slave (BMM150)
+	
+	//was "if (ioctl(file_i2c, I2C_SLAVE, addr) < 0)"
+	if (ioctl(file_i2c, I2C_SLAVE, BMM150_I2C_Address) < 0)
 	{
 		printf("Failed to acquire bus access and/or talk to slave.\n");
 		//ERROR HANDLING; you can check errno to see what went wrong
 		return -1;
+	} else {
+		printf("Communicated with I2C device. Returned: %u\n", file_i2c);
 	}
 	
-	
+	//Check if same as Arduino program (it's not)
+	if (file_i2c == BMM150_CHIP_ID) {
+		printf("Connected to same device register as Arduino sample code");
+	}
+
 	//----- READ BYTES -----
-	length = 4;			//<<< Number of bytes to read
+	length = 16;			//<<< Number of bytes to read
 	if (read(file_i2c, buffer, length) != length)		//read() returns the number of bytes actually read, if it doesn't match then an error occurred (e.g. no response from the device)
 	{
 		//ERROR HANDLING: i2c transaction failed
@@ -39,21 +48,20 @@ int main() {
 	{
         //output is 255 255 255 255 
         //NEED TO INVESTIGATE (make handshake)
-		printf("Data read: %d\n", (int)buffer[0]);
-        printf("Data read: %d\n", (int)buffer[1]);
-        printf("Data read: %d\n", (int)buffer[2]);
-        printf("Data read: %d\n", (int)buffer[3]);
+		for (int i=0; i<length; i++) {
+			printf("Data read: %d\n", buffer[i]);
+		}
 	}
 
-	
+	/*
 	//----- WRITE BYTES -----
 	buffer[0] = 0x01;
 	buffer[1] = 0x02;
 	length = 2;			//<<< Number of bytes to write
 	if (write(file_i2c, buffer, length) != length)		//write() returns the number of bytes actually written, if it doesn't match then an error occurred (e.g. no response from the device)
 	{
-		/* ERROR HANDLING: i2c transaction failed */
+		/* ERROR HANDLING: i2c transaction failed 
 		printf("Failed to write to the i2c bus.\n");
-	}
+	} */
 
 }

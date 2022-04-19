@@ -5,3 +5,6 @@ I2C explanation: https://www.youtube.com/watch?v=6IAkYpmA1DQ
 ![IMG_6410](https://user-images.githubusercontent.com/19243227/163467167-40821fb4-18c6-478d-a758-e1bf4c1ec323.PNG)
 
 https://www.kernel.org/doc/Documentation/i2c/dev-interface
+
+https://github.com/BoschSensortec/BMM150-Sensor-API
+https://media.digikey.com/pdf/Data%20Sheets/Bosch/BMM150.pdf

@@ -6,7 +6,7 @@
 #include "raspi-bmm150_defs.h"
 
 int main() {
-	__uint8_t file_i2c;
+	uint8_t file_i2c;
 	int length;
 	unsigned char buffer[60];
 
@@ -31,6 +31,10 @@ int main() {
 	} else {
 		printf("Communicated with I2C device. Returned: %u\n", file_i2c);
 	}
+
+	suspend_to_sleep_mode();
+
+	write_op_mode(BMM150_SLEEP_MODE);
 	
 	//Check if same as Arduino program (it's not)
 	if (file_i2c == BMM150_CHIP_ID) {
@@ -74,25 +78,28 @@ void suspend_to_sleep_mode() {
 	//delay(3);
 }
 
-void set_power_control_bit(__uint8_t pwrcntrl_bit) {
-	__uint8_t reg_data = 0;
+void set_power_control_bit(uint8_t pwrcntrl_bit) {
+	//NOT DONE
+	
+	uint8_t reg_data = 0;
 
 	/* Power control register 0x4B is read */
-    //reg_data = i2c_read(BMM150_POWER_CONTROL_ADDR);
+    reg_data = i2c_read(BMM150_POWER_CONTROL_ADDR);
+	reg_data = read(file_i2c, buffer, 1)
     /* Sets the value of power control bit */
-    //reg_data = BMM150_SET_BITS_POS_0(reg_data, BMM150_PWR_CNTRL, pwrcntrl_bit);
+    reg_data = BMM150_SET_BITS_POS_0(reg_data, BMM150_PWR_CNTRL, pwrcntrl_bit);
     //i2c_write(BMM150_POWER_CONTROL_ADDR, reg_data);
 }
 
 void write_op_mode(__uint8_t op_mode) {
 	
-	//uint8_t reg_data = 0;
+	uint8_t reg_data = 0;
     
 	//  #define BMM150_OP_MODE_ADDR		    0x4C
-    //reg_data = i2c_read(BMM150_OP_MODE_ADDR);
+    reg_data = i2c_read(BMM150_OP_MODE_ADDR);
 
     /* Set the op_mode value in Opmode bits of 0x4C */
-    //reg_data = BMM150_SET_BITS(reg_data, BMM150_OP_MODE, op_mode);
+    reg_data = BMM150_SET_BITS(reg_data, BMM150_OP_MODE, op_mode);
     /**
 	
 	--------
@@ -103,8 +110,40 @@ void write_op_mode(__uint8_t op_mode) {
         ((data << bitname##_POS) & bitname##_MSK))
      *
      */
-	----
+	
 
     //  #define BMM150_OP_MODE_ADDR		    0x4C
-    //i2c_write(BMM150_OP_MODE_ADDR, reg_data);
+    i2c_write(BMM150_OP_MODE_ADDR, reg_data);
+}
+
+void i2c_read(short address, int8_t* buffer, short length) {
+	//----- READ BYTES ----- //
+	if (read(file_i2c, buffer, length) != length)		//read() returns the number of bytes actually read, if it doesn't match then an error occurred (e.g. no response from the device)
+	{
+		//ERROR HANDLING: i2c transaction failed
+		printf("Failed to read from the i2c bus.\n");
+	}
+	else
+	{
+        //output is 255 255 255 255 
+        //NEED TO INVESTIGATE (make handshake)
+		for (int i=0; i<length; i++) {
+			printf("Data read: %d\n", buffer[i]);
+		}
+	}
+}
+
+void i2c_read(short address) {
+	uint8_t byte;
+
+	//----- READ BYTES ----
+	if (read(file_i2c, byte, 1) != 1)		//read() returns the number of bytes actually read, if it doesn't match then an error occurred (e.g. no response from the device)
+	{
+		//ERROR HANDLING: i2c transaction failed
+		printf("Failed to read from the i2c bus.\n");
+	}
+	else
+	{
+		printf("Data read: %d\n", byte);
+	}
 }

@@ -6,7 +6,7 @@
 #include "raspi-bmm150_defs.h"
 
 int main() {
-	uint8_t file_i2c;
+	__uint8_t file_i2c;
 	int length;
 	unsigned char buffer[60];
 
@@ -78,14 +78,14 @@ void suspend_to_sleep_mode() {
 	//delay(3);
 }
 
-void set_power_control_bit(uint8_t pwrcntrl_bit) {
+void set_power_control_bit(__uint8_t pwrcntrl_bit) {
 	//NOT DONE
 	
-	uint8_t reg_data = 0;
+	__uint8_t reg_data = 0;
 
 	/* Power control register 0x4B is read */
     reg_data = i2c_read(BMM150_POWER_CONTROL_ADDR);
-	reg_data = read(file_i2c, buffer, 1)
+	//reg_data = read(file_i2c, buffer, 1);
     /* Sets the value of power control bit */
     reg_data = BMM150_SET_BITS_POS_0(reg_data, BMM150_PWR_CNTRL, pwrcntrl_bit);
     //i2c_write(BMM150_POWER_CONTROL_ADDR, reg_data);
@@ -93,7 +93,7 @@ void set_power_control_bit(uint8_t pwrcntrl_bit) {
 
 void write_op_mode(__uint8_t op_mode) {
 	
-	uint8_t reg_data = 0;
+	__uint8_t reg_data = 0;
     
 	//  #define BMM150_OP_MODE_ADDR		    0x4C
     reg_data = i2c_read(BMM150_OP_MODE_ADDR);
@@ -118,7 +118,7 @@ void write_op_mode(__uint8_t op_mode) {
 
 void i2c_read(short address, int8_t* buffer, short length) {
 	//----- READ BYTES ----- //
-	if (read(file_i2c, buffer, length) != length)		//read() returns the number of bytes actually read, if it doesn't match then an error occurred (e.g. no response from the device)
+	if (read(address, buffer, length) != length)		//read() returns the number of bytes actually read, if it doesn't match then an error occurred (e.g. no response from the device)
 	{
 		//ERROR HANDLING: i2c transaction failed
 		printf("Failed to read from the i2c bus.\n");
@@ -137,7 +137,7 @@ void i2c_read(short address) {
 	uint8_t byte;
 
 	//----- READ BYTES ----
-	if (read(file_i2c, byte, 1) != 1)		//read() returns the number of bytes actually read, if it doesn't match then an error occurred (e.g. no response from the device)
+	if (read(address, byte, 1) != 1)		//read() returns the number of bytes actually read, if it doesn't match then an error occurred (e.g. no response from the device)
 	{
 		//ERROR HANDLING: i2c transaction failed
 		printf("Failed to read from the i2c bus.\n");

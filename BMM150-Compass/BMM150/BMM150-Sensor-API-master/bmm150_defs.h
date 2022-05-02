@@ -280,7 +280,7 @@
 #define BMM150_DRDY_STATUS_MSK                    UINT8_C(0x01)
 
 /*! @name Interrupt status macros */
-#define BMM150_INT_ASSERTED_DRDY                  UINT16_C(0x0100)
+#define BMM150_INT_ASSERTED_DRDY                  UINT16_C(0x0100) // check interrupt value
 #define BMM150_INT_ASSERTED_LOW_THRES             UINT16_C(0x0007)
 #define BMM150_INT_ASSERTED_HIGH_THRES            UINT16_C(0x0380)
 

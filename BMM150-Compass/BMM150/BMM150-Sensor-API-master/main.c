@@ -96,6 +96,7 @@ static int8_t set_config(struct bmm150_dev *dev)
         if (rslt == BMM150_OK)
         {
             /* Map the data interrupt pin */
+            // MIGHT BE KEY TO INTERRUPT ERRORS
             settings.int_settings.drdy_pin_en = 0x01;
             rslt = bmm150_set_sensor_settings(BMM150_SEL_DRDY_PIN_EN, &settings, dev);
             bmm150_error_codes_print_result("bmm150_set_sensor_settings", rslt);
@@ -125,7 +126,11 @@ static int8_t get_data(struct bmm150_dev *dev)
         printf("in while loop\n");
         printf("%d\n", rslt);
 
+        printf("%d\n", dev->int_status);
+        printf("%d\n", BMM150_INT_ASSERTED_DRDY);
+
         /* the check is not set */
+        // BMM150_INT_ = UINT16_C(0x0100)
         if (dev->int_status & BMM150_INT_ASSERTED_DRDY)
         {
             printf("Data interrupt occurred\n");

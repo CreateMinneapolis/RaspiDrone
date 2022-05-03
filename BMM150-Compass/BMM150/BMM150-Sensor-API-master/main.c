@@ -144,9 +144,9 @@ static int8_t get_data(struct bmm150_dev *dev)
                 /* Unit for magnetometer data is microtesla(uT) */
                 printf("MAG DATA[%d]  X : %d uT   Y : %d uT   Z : %d uT\n", idx, mag_data.x, mag_data.y, mag_data.z);
             }
+            break;
         }
 
-        break;
     }
 
     return rslt;

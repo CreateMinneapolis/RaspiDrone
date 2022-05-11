@@ -6,6 +6,7 @@
 
 /******************************************************************************/
 #include <stdio.h>
+#include <linux/i2c-dev.h>
 #include "bmm150_common.h"
 #include "bmm150.h"
 
@@ -21,15 +22,23 @@ static uint8_t dev_addr;
 /*!
  * @brief Function for initialization of I2C bus.
  */
-int8_t bmm150_user_i2c_init(void)
+int bmm150_user_i2c_init(dev_addr)
 {
 
     /* Implement I2C bus initialization according to the target machine. */
-/*
-    int8_t fptr = open("/dev/i2c-1", 0_RDWR)
-    return fptr; */
 
-    return 0;
+    int file = open("/dev/i2c-1", 0_RDWR);
+    if (file < 0) {
+        printf("ERROR OPENING DEVICE");
+    }
+
+    if(ioctl(file, I2C_SLAVE, dev_addr) < 0) {
+        printf("ERROR SETTING DEVICE ADDRESS");
+    }
+
+    return file;
+
+    // return 0;
 }
 
 /*!
@@ -49,6 +58,7 @@ int8_t bmm150_user_spi_init(void)
 void bmm150_user_delay_us(uint32_t period_us, void *intf_ptr)
 {
     /* Wait for a period amount of microseconds. */
+    usleep(period_us);
 }
 
 /*!
@@ -56,8 +66,21 @@ void bmm150_user_delay_us(uint32_t period_us, void *intf_ptr)
  */
 int8_t bmm150_user_i2c_reg_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length, void *intf_ptr)
 {
-
     /* Write to registers using I2C. Return 0 for a successful execution. */
+
+    u_char buf[32];
+
+    buf[0] = reg_addr;
+
+    for(int i=0; i<length; i++) {
+        buf[i+1] = reg_data[i];
+    }
+
+    if(write(file, buf, length+1) != length+1) {
+        /* ERROR in I2C */
+        printf("I2C WRITE ERROR");
+        return 1;
+    }
     return 0;
 }
 
@@ -68,6 +91,12 @@ int8_t bmm150_user_i2c_reg_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t le
 {
 
     /* Read from registers using I2C. Return 0 for a successful execution. */
+
+    if(read(file, reg_data, length) != length) {
+        printf("I2C READ ERROR");
+        return 1;
+        /* I2C read error */
+    }
     return 0;
 }
 

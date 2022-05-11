@@ -421,7 +421,7 @@ enum bmm150_intf {
  * @retval Non-zero for Failure
  */
 typedef BMM150_INTF_RET_TYPE (*bmm150_read_fptr_t)(uint8_t reg_addr, uint8_t *reg_data, uint32_t length,
-                                                   void *intf_ptr);
+                                                   void *intf_ptr, int file);
 
 /*!
  * @brief Bus communication function pointer which should be mapped to
@@ -437,7 +437,7 @@ typedef BMM150_INTF_RET_TYPE (*bmm150_read_fptr_t)(uint8_t reg_addr, uint8_t *re
  *
  */
 typedef BMM150_INTF_RET_TYPE (*bmm150_write_fptr_t)(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length,
-                                                    void *intf_ptr);
+                                                    void *intf_ptr, int file);
 
 /*!
  * @brief Delay function pointer which should be mapped to
@@ -633,6 +633,9 @@ struct bmm150_dev
 
     /*! Variable that holds result of read/write function */
     BMM150_INTF_RET_TYPE intf_rslt;
+
+    /* File pointer/return from open statement */
+    int file;
 
     /*! Bus read function pointer */
     bmm150_read_fptr_t read;

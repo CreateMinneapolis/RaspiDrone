@@ -25,6 +25,10 @@ int8_t bmm150_user_i2c_init(void)
 {
 
     /* Implement I2C bus initialization according to the target machine. */
+/*
+    int8_t fptr = open("/dev/i2c-1", 0_RDWR)
+    return fptr; */
+
     return 0;
 }
 
@@ -108,7 +112,7 @@ int8_t bmm150_interface_selection(struct bmm150_dev *dev)
             printf("I2C Interface \n");
 
             /* To initialize the user I2C function */
-            bmm150_user_i2c_init();
+            dev->intf_ptr = bmm150_user_i2c_init();
 
             dev_addr = BMM150_DEFAULT_I2C_ADDRESS;
             dev->read = bmm150_user_i2c_reg_read;

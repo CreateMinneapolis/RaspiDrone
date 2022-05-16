@@ -22,12 +22,14 @@ static uint8_t dev_addr;
 /*!
  * @brief Function for initialization of I2C bus.
  */
-int bmm150_user_i2c_init(dev_addr)
+int bmm150_user_i2c_init()
 {
 
     /* Implement I2C bus initialization according to the target machine. */
 
-    int file = open("/dev/i2c-1", 0_RDWR);
+    dev_addr = BMM150_DEFAULT_I2C_ADDRESS;
+
+    int file = open("/dev/i2c-1", I2C_RDWR);
     if (file < 0) {
         printf("ERROR OPENING DEVICE");
     }
@@ -68,7 +70,8 @@ int8_t bmm150_user_i2c_reg_write(uint8_t reg_addr, const uint8_t *reg_data, uint
 {
     /* Write to registers using I2C. Return 0 for a successful execution. */
 
-    u_char buf[32];
+    /* u_char drew an issue */
+    char buf[32];
 
     buf[0] = reg_addr;
 
@@ -76,7 +79,7 @@ int8_t bmm150_user_i2c_reg_write(uint8_t reg_addr, const uint8_t *reg_data, uint
         buf[i+1] = reg_data[i];
     }
 
-    if(write(file, buf, length+1) != length+1) {
+    if(write(intf_ptr, buf, length+1) != length+1) {
         /* ERROR in I2C */
         printf("I2C WRITE ERROR");
         return 1;
@@ -92,7 +95,7 @@ int8_t bmm150_user_i2c_reg_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t le
 
     /* Read from registers using I2C. Return 0 for a successful execution. */
 
-    if(read(file, reg_data, length) != length) {
+    if(read(intf_ptr, reg_data, length) != length) {
         printf("I2C READ ERROR");
         return 1;
         /* I2C read error */
@@ -140,10 +143,11 @@ int8_t bmm150_interface_selection(struct bmm150_dev *dev)
         {
             printf("I2C Interface \n");
 
+            dev_addr = BMM150_DEFAULT_I2C_ADDRESS;
+
             /* To initialize the user I2C function */
             dev->intf_ptr = bmm150_user_i2c_init();
 
-            dev_addr = BMM150_DEFAULT_I2C_ADDRESS;
             dev->read = bmm150_user_i2c_reg_read;
             dev->write = bmm150_user_i2c_reg_write;
             printf("Read and wrote from I2C");

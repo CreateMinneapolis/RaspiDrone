@@ -619,7 +619,7 @@ int8_t bmm150_set_regs(uint8_t reg_addr, const uint8_t *reg_data, uint32_t len, 
         /* SPI write requires to set The MSB of reg_addr as 0
          * but in default the MSB is always 0
          */
-        dev->intf_rslt = dev->write(reg_addr, reg_data, len, dev->intf_ptr);
+        dev->intf_rslt = dev->write(reg_addr, reg_data, len, dev->intf_ptr, dev->file);
     }
     else
     {
@@ -649,7 +649,7 @@ int8_t bmm150_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint32_t len, struct
         }
 
         /* Read the data from the reg_addr */
-        dev->intf_rslt = dev->read(reg_addr, reg_data, len, dev->intf_ptr);
+        dev->intf_rslt = dev->read(reg_addr, reg_data, len, dev->intf_ptr, dev->file);
     }
     else
     {

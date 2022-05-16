@@ -21,7 +21,7 @@ extern "C" {
  *  @retval 0 -> Success
  *  @retval < 0 -> Failure Info
  */
-int bmm150_user_i2c_init(int);
+int bmm150_user_i2c_init();
 
 /*!
  *  @brief Function for initialization of SPI bus

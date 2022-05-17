@@ -29,7 +29,7 @@ int bmm150_user_i2c_init()
 
     dev_addr = BMM150_DEFAULT_I2C_ADDRESS;
 
-    int file = open("/dev/i2c-1", I2C_RDWR);
+    int file = open("/dev/i2c-1", O_RDWR);
     if (file < 0) {
         printf("ERROR OPENING DEVICE");
     }

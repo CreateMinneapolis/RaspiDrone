@@ -6,10 +6,10 @@
 #include <thread>
 #include <chrono>
 #include <cmath>
+// Look up usage of I2C read/write
+#include <unistd.h>
 
 #include <linux/i2c-dev.h>
-// NEED IMPORT FIX
-#include <i2c/smbus.h>
 #ifndef I2C_M_RD
 #include <linux/i2c.h>
 #endif
@@ -24,7 +24,7 @@ public:
 	{
 		const char *i2c_fname = "/dev/i2c-1";
 
-		if ((file = open(i2c_fname, O_RDWR)) < 0)
+		if ((i2c_fd = open(i2c_fname, O_RDWR)) < 0)
 		{
 			char err[200];
 			sprintf(err, "open('%s') in i2c_init", i2c_fname);
@@ -52,7 +52,7 @@ public:
 		msgset[0].msgs = msgs;
 		msgset[0].nmsgs = 1;
 
-		if (ioctl(file, I2C_RDWR, &msgset) < 0)
+		if (ioctl(i2c_fd, I2C_RDWR, &msgset) < 0)
 		{
 			perror("ioctl(I2C_RDWR) in i2c_write");
 		}
@@ -61,7 +61,6 @@ public:
 	// Reads data starting from a register address
 	void readRegister(unsigned char registerAddress, unsigned char *bytes, int len)
 	{
-		/*
 		unsigned char outbuf[1];
 		struct i2c_msg msgs[2];
 		struct i2c_rdwr_ioctl_data msgset[1];
@@ -84,21 +83,14 @@ public:
 		msgset[0].msgs = msgs;
 		msgset[0].nmsgs = 2;
 
-		if (ioctl(file, I2C_RDWR, &msgset) < 0)
+		if (ioctl(i2c_fd, I2C_RDWR, &msgset) < 0)
 		{
 			perror("ioctl(I2C_RDWR) in i2c_write");
 		}
-		*/
-
-		// NOT COMPLETE
-		__u8 reg = registerAddress;
-
-		/* Using SMBus commands */
-		bytes = i2c_smbus_read_word_data(file, reg);
 	}
 
 private:
-	int file;
+	int i2c_fd;
 	unsigned char slaveAddress;
 };
 
@@ -133,9 +125,8 @@ public:
 		msb_data = ((int16_t)((int8_t)data[3])) * 32;
 		int16_t raw_datay = (int16_t)(msb_data | data[2]);
 
-		int16_t output = std::atan2(raw_datax, raw_datay) * 180 / M_PI;
 		// Calculate angle
-		return output;
+		return std::atan2(raw_datax, raw_datay) * 180 / M_PI;
 	}
 };
 
